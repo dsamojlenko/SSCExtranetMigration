@@ -1,0 +1,14 @@
+<?php
+
+function hook_comment_insert($comment) {
+  // clear page cache after comment has been saved
+  $url = url('node/' . $comment->nid, array('absolute' => TRUE));
+  cache_clear_all($url, 'cache_page');
+}
+
+function ssc_node_view($node, $view_mode) {
+$node->rss_elements[1] = array(
+      'key' => 'pubDate',
+      'value' => $node->field_publication_date
+    );
+}

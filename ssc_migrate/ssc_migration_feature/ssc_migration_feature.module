@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the SSC Migration Feature feature.
+ */
+
+include_once 'ssc_migration_feature.features.inc';

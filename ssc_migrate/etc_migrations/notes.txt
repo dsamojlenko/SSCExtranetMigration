@@ -1,0 +1,31 @@
+
+
+Add migrating db to settings.php:
+$databases = array (
+  'default' =>
+  array (
+    'default' =>
+    array (
+      'database' => 'extranet_migrate',
+      'username' => 'extranet_migrate',
+      'password' => 'extranet_migrate',
+      'host' => 'localhost',
+      'port' => '3306',
+      'driver' => 'mysql',
+      'prefix' => '',
+    ),
+  ),
+  'legacy' =>
+  array(
+    'default' =>
+      array(
+        'database' => 'extranet_dev',
+		'username' => 'extranet_dev',
+		'password' => 'extranet_dev',
+		'host' => 'localhost',
+		'port' => '3306',
+		'driver' => 'mysql',
+        'prefix' => '',
+      ),
+  ),
+);

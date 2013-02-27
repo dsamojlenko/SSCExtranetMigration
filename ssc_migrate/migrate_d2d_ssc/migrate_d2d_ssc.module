@@ -1,0 +1,1009 @@
+<?php
+
+/**
+ * Implements hook_flush_caches().
+ */
+function migrate_d2d_ssc_flush_caches() {
+  migrate_d2d_ssc_register_migrations();
+}
+
+function migrate_d2d_ssc_register_migrations() {
+	$common_arguments = array(
+		'source_connection' => 'legacy',
+		'source_version' => 7,
+	);
+	
+	// MIGRATE ROLES
+	
+	$role_arguments = $common_arguments + array(
+		'machine_name' => 'SSCRole',
+		'description' => t('Import Roles'),
+		'role_mappings' => array(
+			'ADM CS' => 'ADM CS',
+			'ADM CS Assistant' => 'ADM CS Assistant',
+			'ADM Ops' => 'ADM Ops',
+			'ADM Ops Assistant' => 'ADM Ops Assistant',
+			'ADM PCR' => 'ADM PCR',
+			'ADM PCR Assistant' => 'ADM PCR Assistant',
+			'ADM TSSD' => 'ADM TSSD',
+			'ADM TSSD Assistant' => 'ADM TSSD Assistant',
+			'administrative user' => 'administrator',
+			'blogger-admin' => 'blogger-admin',
+			'communications user' => 'communications user',
+			'COO' => 'COO',
+			'COO Assistant' => 'COO Assistant',
+			'President' => 'President',
+			'President Assistant' => 'President Assistant',
+		),
+	);
+	
+	Migration::registerMigration('DrupalRole7Migration', $role_arguments['machine_name'],$role_arguments);
+		
+	// MIGRATE USERS
+		
+	$user_arguments = $common_arguments + array(
+		'description' => t('Migrate Users'),
+		'machine_name' => 'SSCUser',
+		'role_migration' => 'SSCRole',
+	);
+	
+	Migration::registerMigration('DrupalUser7Migration',$user_arguments['machine_name'], $user_arguments);
+	
+	// MIGRATE FILES
+	
+	$file_arguments = $common_arguments + array(
+		'machine_name' => 'SSCFile',
+		'description' => 'Migrate Files',
+		'user_migration' => 'SSCUser',
+		'default_uid' => 1,
+		'source_dir' => 'F:\Sites\SSC\extranet-dev.ssc2.etg.gc.ca\current.new\sites\default\files\media',
+		'destination_dir' => 'public://',
+	);
+	
+	Migration::registerMigration('DrupalFile7Migration', $file_arguments['machine_name'], $file_arguments);	
+	
+	// MIGRATE NODES
+	
+	$common_node_arguments = $common_arguments + array(
+		'user_migration' => 'SSCUser',
+		'default_uid' => 1,
+	);
+	
+	$node_arguments = array(
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_adm_cs_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_adm_cs_blog_content',
+			'source_type' => 'adm_cs_blog_content',
+			'destination_type' => 'adm_cs_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_adm_ops_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_adm_ops_blog_content',
+			'source_type' => 'adm_ops_blog_content',
+			'destination_type' => 'adm_ops_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_adm_pcr_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_adm_pcr_blog_content',
+			'source_type' => 'adm_pcr_blog_content',
+			'destination_type' => 'adm_pcr_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_adm_tssd_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_adm_tssd_blog_content',
+			'source_type' => 'adm_tssd_blog_content',
+			'destination_type' => 'adm_tssd_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_communiques',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_communiques',
+			'source_type' => 'communiques',
+			'destination_type' => 'communiques',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_coo_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_coo_blog_content',
+			'source_type' => 'coo_blog_content',
+			'destination_type' => 'coo_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_finance',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_finance',
+			'source_type' => 'finance',
+			'destination_type' => 'finance',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_human_ressources',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_human_ressources',
+			'source_type' => 'human_ressources',
+			'destination_type' => 'human_ressources',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_iconnect',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_iconnect',
+			'source_type' => 'iconnect',
+			'destination_type' => 'iconnect',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_latest_news',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_latest_news',
+			'source_type' => 'latest_news',
+			'destination_type' => 'latest_news',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_page',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_page',
+			'source_type' => 'page',
+			'destination_type' => 'page',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_president_blog_content',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_president_blog_content',
+			'source_type' => 'president_blog_content',
+			'destination_type' => 'president_blog_content',
+		),
+		array(
+			'class_name' => 'SSCNodeMigration',
+			// 'class_name' => 'SSCNodeMigration_procurement',
+			'description' => t('Migration of nodes'),
+			'machine_name' => 'SSCNode_procurement',
+			'source_type' => 'procurement',
+			'destination_type' => 'procurement',
+		),
+	);
+	
+	foreach ($node_arguments as $arguments) {
+		$arguments = array_merge_recursive($arguments, $common_node_arguments);
+		Migration::registerMigration($arguments['class_name'], $arguments['machine_name'],$arguments);
+	}
+	
+	// MIGRATE COMMENTS
+	
+	$common_comment_arguments = $common_arguments + array(
+		'user_migration' => 'SSCUser',
+		'default_uid' => 1,
+	);
+	
+	$comment_arguments = array(
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_adm_cs_blog_content',
+			'source_type' => 'adm_cs_blog_content',
+			'destination_type' => 'adm_cs_blog_content',
+			'node_migration' => 'SSCNode_adm_cs_blog_content',
+		),
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_adm_ops_blog_content',
+			'source_type' => 'adm_ops_blog_content',
+			'destination_type' => 'adm_ops_blog_content',
+			'node_migration' => 'SSCNode_adm_ops_blog_content',
+		),
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_adm_pcr_blog_content',
+			'source_type' => 'adm_pcr_blog_content',
+			'destination_type' => 'adm_pcr_blog_content',
+			'node_migration' => 'SSCNode_adm_pcr_blog_content',
+		),
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_adm_tssd_blog_content',
+			'source_type' => 'adm_tssd_blog_content',
+			'destination_type' => 'adm_tssd_blog_content',
+			'node_migration' => 'SSCNode_adm_tssd_blog_content',
+		),
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_coo_blog_content',
+			'source_type' => 'coo_blog_content',
+			'destination_type' => 'coo_blog_content',
+			'node_migration' => 'SSCNode_coo_blog_content',
+		),
+		array(
+			'class_name' => 'DrupalComment7Migration',
+			'description' => t('Migration of comments'),
+			'machine_name' => 'SSCComment_president_blog_content',
+			'source_type' => 'president_blog_content',
+			'destination_type' => 'president_blog_content',
+			'node_migration' => 'SSCNode_president_blog_content',
+		),
+	);
+	
+	foreach ($comment_arguments as $arguments) {
+		$arguments = array_merge_recursive($arguments, $common_comment_arguments);
+		Migration::registerMigration($arguments['class_name'], $arguments['machine_name'],$arguments);
+	}
+
+	// MIGRATE MENUS
+	/*
+	$menu_arguments = array(
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'main-menu',
+			'links' => array(
+				'machine_name' => 'main-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'main-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'management',
+			'links' => array(
+				'machine_name' => 'management-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'management',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-about-us',
+			'links' => array(
+				'machine_name' => 'menu-about-us-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-about-us',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-blog-admin',
+			'links' => array(
+				'machine_name' => 'menu-blog-admin-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-blog-admin',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-blog-topics',
+			'links' => array(
+				'machine_name' => 'menu-blog-topics-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-blog-topics',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-contact-us-left-menu',
+			'links' => array(
+				'machine_name' => 'menu-contact-us-left-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-contact-us-left-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-corporate-identity',
+			'links' => array(
+				'machine_name' => 'menu-corporate-identity-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-corporate-identity',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-engagement',
+			'links' => array(
+				'machine_name' => 'menu-engagement-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-engagement',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-finance-left-menu',
+			'links' => array(
+				'machine_name' => 'menu-finance-left-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-finance-left-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-for-government',
+			'links' => array(
+				'machine_name' => 'menu-for-government-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-for-government',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-for-partners',
+			'links' => array(
+				'machine_name' => 'menu-for-partners-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-for-partners',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-help',
+			'links' => array(
+				'machine_name' => 'menu-help-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-help',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-human-ressources-left-menu',
+			'links' => array(
+				'machine_name' => 'menu-human-ressources-left-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-human-ressources-left-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-news-left-menu',
+			'links' => array(
+				'machine_name' => 'menu-news-left-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-news-left-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-procurement-left-menu',
+			'links' => array(
+				'machine_name' => 'menu-procurement-left-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-procurement-left-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-prriorities',
+			'links' => array(
+				'machine_name' => 'menu-prriorities-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-prriorities',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-resourcecentre-menu',
+			'links' => array(
+				'machine_name' => 'menu-resourcecentre-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-resourcecentre-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-stay-connected-menu',
+			'links' => array(
+				'machine_name' => 'menu-stay-connected-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-stay-connected-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-strategic-planning',
+			'links' => array(
+				'machine_name' => 'menu-strategic-planning-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-strategic-planning',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-wet-footer',
+			'links' => array(
+				'machine_name' => 'menu-wet-footer-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-wet-footer',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-wet-header',
+			'links' => array(
+				'machine_name' => 'menu-wet-header-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-wet-header',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-wet-mid-footer',
+			'links' => array(
+				'machine_name' => 'menu-wet-mid-footer-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-wet-mid-footer',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-wet-terms',
+			'links' => array(
+				'machine_name' => 'menu-wet-terms-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-wet-terms',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'menu-whos-blogging',
+			'links' => array(
+				'machine_name' => 'menu-whos-blogging-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'menu-whos-blogging',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'navigation',
+			'links' => array(
+				'machine_name' => 'navigation-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'navigation',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+		array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'user-menu',
+			'links' => array(
+				'machine_name' => 'user-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'user-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+		
+	);
+	
+	foreach ($menu_arguments as $arguments) {
+		Migration::registerMigration($arguments['class_name'], $arguments['machine_name'],$arguments);
+	}
+	
+	// loop over same arguments because we nested the MenuLinks arguments above
+	foreach ($menu_arguments as $arguments) {
+		Migration::registerMigration('DrupalMenuLink7Migration', $arguments['links']['machine_name'],$arguments['links']);
+	}
+	
+	*/
+	
+	/*
+	array(
+			'class_name' => 'DrupalMenu7Migration',
+			'description' => t('Migration of menus'),
+			'machine_name' => 'user-menu',
+			'links' => array(
+				'machine_name' => 'user-menu-links',
+				'description' => 'Import Links',
+				'menu_migration' => 'user-menu',
+				'node_migrations' => array(
+					'SSCNode_adm_cs_blog_content',
+					'SSCNode_adm_ops_blog_content',
+					'SSCNode_adm_pcr_blog_content',
+					'SSCNode_adm_tssd_blog_content',
+					'SSCNode_communiques',
+					'SSCNode_coo_blog_content',
+					'SSCNode_finance',
+					'SSCNode_human_ressources',
+					'SSCNode_iconnect',
+					'SSCNode_latest_news',
+					'SSCNode_page',
+					'SSCNode_president_blog_content',
+					'SSCNode_procurement'
+				),
+			),
+		),
+	
+	*/
+	
+	$menu_arguments = $common_arguments + array(
+		'machine_name' => 'SSCMenu',
+		'description' => 'Migrate Menus',
+	);
+	
+	Migration::registerMigration('DrupalMenu6Migration', $menu_arguments['machine_name'], $menu_arguments);
+	
+	
+	$menu_link_arguments = $common_arguments + array(
+		'machine_name' => 'SSCMenuLink',
+		'description' => 'Migrate Menu Links',
+		'menu_migration' => 'SSCMenu',
+		'node_migrations' => array(
+			'SSCNode_adm_cs_blog_content',
+			'SSCNode_adm_ops_blog_content',
+			'SSCNode_adm_pcr_blog_content',
+			'SSCNode_adm_tssd_blog_content',
+			'SSCNode_communiques',
+			'SSCNode_coo_blog_content',
+			'SSCNode_finance',
+			'SSCNode_human_ressources',
+			'SSCNode_iconnect',
+			'SSCNode_latest_news',
+			'SSCNode_page',
+			'SSCNode_president_blog_content',
+			'SSCNode_procurement'
+		),
+	);
+	
+	Migration::registerMigration('DrupalMenuLinks6Migration', $menu_link_arguments['machine_name'], $menu_link_arguments);
+	
+}
+
+/**
+ * Implements hook_migrate_api().
+ */
+function migrate_d2d_ssc_migrate_api() {
+  $api = array(
+    'api' => 2,
+  );
+  return $api;
+}

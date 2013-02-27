@@ -1,0 +1,8 @@
+; $Id$
+
+name = SSCCustom
+description = SSC Custom Module
+package = SSC Modules
+core = 7.x
+
+files[] = ssc.module

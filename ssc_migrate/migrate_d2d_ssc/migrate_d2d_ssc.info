@@ -1,0 +1,11 @@
+name = "SSC Extranet Migration"
+description = "Migrate content from old Extranet"
+package = "Development"
+core = 7.x
+
+dependencies[] = migrate
+dependencies[] = migrate_d2d
+
+files[] = node.inc
+files[] = menu.inc
+files[] = migrate_d2d_ssc.module
